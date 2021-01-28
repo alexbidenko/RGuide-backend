@@ -1,15 +1,15 @@
 package main
 
 import (
-	"controllers"
 	_ "database/sql"
-	"dif"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
-	"migrations"
-	"models"
 	"net/http"
+	"rguide/controllers"
+	"rguide/dif"
+	"rguide/migrations"
+	"rguide/models"
 )
 
 func handler(w http.ResponseWriter, _ *http.Request) {

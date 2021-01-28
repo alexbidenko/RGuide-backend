@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"dif"
 	"encoding/json"
-	"models"
-	_ "models"
 	"net/http"
+	"rguide/dif"
+	"rguide/models"
+	_ "rguide/models"
 )
 
 func GetProducts(w http.ResponseWriter, _ *http.Request) {

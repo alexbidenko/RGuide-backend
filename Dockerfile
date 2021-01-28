@@ -5,6 +5,7 @@ RUN apk add git
 WORKDIR /go/src/RGuide-backend
 COPY . .
 ENV GOPATH="/go/src/RGuide-backend"
+RUN go get -d ./...
 RUN GOOS=linux go build -ldflags="-s -w" -o main .
 
 FROM alpine:3.10
