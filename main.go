@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"rguide/controllers"
 	"rguide/dif"
-	"rguide/migrations"
-	"rguide/models"
 )
 
 func handler(w http.ResponseWriter, _ *http.Request) {
@@ -23,10 +21,6 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
-	db.Exec(migrations.Schema)
-	tx := db.MustBegin()
-	tx.NamedExec("INSERT INTO products (id, title, description) VALUES (:id, :title, :description)", &models.Product{Id: 1, Title: "title", Description: "description"})
-	tx.Commit()
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api").Subrouter()
