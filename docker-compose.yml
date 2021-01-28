@@ -23,21 +23,21 @@ services:
     networks:
       - app_network
 
-  go_application:
-    build: "."
-    depends_on:
-      - "postgres"
-    networks:
-      - app_network
-
-  nginx:
-    build: "./.nginx"
-    container_name: rguide_backend
-    depends_on:
-      - "go_application"
-    networks:
-      - app_network
-      - server
+#  go_application:
+#    build: "."
+#    depends_on:
+#      - "postgres"
+#    networks:
+#      - app_network
+#
+#  nginx:
+#    build: "./.nginx"
+#    container_name: rguide_backend
+#    depends_on:
+#      - "go_application"
+#    networks:
+#      - app_network
+#      - server
 
 volumes:
   postgres-data:
