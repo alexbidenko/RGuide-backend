@@ -24,8 +24,8 @@ func main() {
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api").Subrouter()
-	s.HandleFunc("/products", controllers.GetProducts)
+	controllers.InitProducts(s)
 	r.HandleFunc("/api", handler)
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8010", nil))
 }

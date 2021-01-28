@@ -8,6 +8,7 @@ ENV GOPATH="/go/src/RGuide-backend"
 RUN go get github.com/lib/pq
 RUN go get github.com/gorilla/mux
 RUN go get github.com/jmoiron/sqlx
+RUN go get github.com/asaskevich/govalidator
 RUN GOOS=linux go build -ldflags="-s -w" -o main .
 
 FROM alpine:3.10
