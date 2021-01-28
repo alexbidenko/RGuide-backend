@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres:9.5-alpine
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - app_network
+
+  go_application:
+    build: "."
+    depends_on:
+      - "postgres"
+    networks:
+      - app_network
+
+  nginx:
+    build: "./.nginx"
+    container_name: rguide_backend
+    depends_on:
+      - "go_application"
+    networks:
+      - app_network
+      - server
+
+volumes:
+  postgres-data:
+
+networks:
+  app_network:
+    driver: bridge
+  server:
+    external: true
