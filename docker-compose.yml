@@ -16,7 +16,7 @@ services:
       - app_network
 
   adminer:
-    image: dockette/adminer:full-php5
+    image: adminer
     restart: always
     ports:
       - 6543:8080
