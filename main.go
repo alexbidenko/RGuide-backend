@@ -34,5 +34,6 @@ func main() {
 	controllers.InitProducts(s)
 	r.HandleFunc("/api", handler)
 	http.Handle("/", r)
+	fmt.Printf("Server starting")
 	log.Fatal(http.ListenAndServe(":8010", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }

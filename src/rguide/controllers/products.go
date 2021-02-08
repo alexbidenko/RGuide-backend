@@ -64,7 +64,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("File Size: %+v\n", handler.Size)
 	// fmt.Printf("MIME Header: %+v\n", handler.Header)
 
-	if r.FormValue("type") != "preview" || r.FormValue("type") != "model" {
+	if r.FormValue("type") != "preview" && r.FormValue("type") != "model" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
