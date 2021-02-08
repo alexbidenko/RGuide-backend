@@ -28,8 +28,8 @@ func main() {
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"})
 
 	r := mux.NewRouter()
-	r.PathPrefix("/files/previews").Handler(http.FileServer(http.Dir("/var/www/preview-images")))
-	r.PathPrefix("/files/models").Handler(http.FileServer(http.Dir("/var/www/model-files")))
+	r.PathPrefix("/files/previews/").Handler(http.StripPrefix("/files/previews/", http.FileServer(http.Dir("/var/www/files-preview"))))
+	r.PathPrefix("/files/models/").Handler(http.StripPrefix("/files/models/", http.FileServer(http.Dir("/var/www/files-model"))))
 	s := r.PathPrefix("/api").Subrouter()
 	controllers.InitProducts(s)
 	r.HandleFunc("/api", handler)

@@ -26,8 +26,8 @@ services:
     depends_on:
       - "postgres"
     volumes:
-      - "preview-images:/var/www/preview-images"
-      - "model-files:/var/www/model-files"
+      - "preview-images:/var/www/files-preview"
+      - "model-files:/var/www/files-model"
     networks:
       - app_network
     ports:

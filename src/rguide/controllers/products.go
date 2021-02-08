@@ -71,9 +71,10 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 
 	// Create a temporary file within our temp-images directory that follows
 	// a particular naming pattern
-	tempFile, err := ioutil.TempFile("/var/www/files-" + r.FormValue("type"), handler.Filename)
+	tempFile, err := ioutil.TempFile("/var/www/files-" + r.FormValue("type"), "file-*-" + handler.Filename)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	defer tempFile.Close()
 
@@ -81,10 +82,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	// byte array
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	// write this byte array to our temporary file
 	tempFile.Write(fileBytes)
 	// return that we have successfully uploaded our file!
-	fmt.Fprintf(w, `{"filename":"` + handler.Filename + `"}`)
+	fmt.Fprintf(w, `{"filename":"` + tempFile.Name() + `"}`)
 }
