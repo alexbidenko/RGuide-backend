@@ -22,23 +22,16 @@ services:
       - app_network
 
   go_application:
-    build: "."
+    build: "../"
     depends_on:
       - "postgres"
     volumes:
-      - "preview-images:/var/www/files-preview"
-      - "model-files:/var/www/files-model"
+      - "preview-images:/var/www/preview-images"
+      - "model-files:/var/www/model-files"
     networks:
       - app_network
-
-  nginx:
-    build: "./.nginx"
-    container_name: rguide_backend
-    depends_on:
-      - "go_application"
-    networks:
-      - app_network
-      - server
+    ports:
+      - 8010:8010
 
 volumes:
   postgres-data:
@@ -48,5 +41,3 @@ volumes:
 networks:
   app_network:
     driver: bridge
-  server:
-    external: true
