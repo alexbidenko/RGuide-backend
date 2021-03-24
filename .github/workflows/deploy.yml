@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-18.04]
 
     steps:
       - name: Checkout 🛎
@@ -28,7 +28,8 @@ jobs:
           echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
+
       - name: Deploy 🚀
-        run: docker-compose up -d --build --remove-orphans
+        run: docker-compose up -d --build
         env:
           DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
