@@ -57,4 +57,4 @@ networks:
   app_network:
     driver: bridge
   server:
-    driver: bridge
+    external: true
