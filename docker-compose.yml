@@ -29,6 +29,8 @@ services:
     build: "."
     depends_on:
       - "postgres"
+    expose:
+      - 8010
     volumes:
       - "preview-images:/var/www/files-preview"
       - "model-files:/var/www/files-model"
@@ -41,8 +43,8 @@ services:
     container_name: rguide_backend
     depends_on:
       - "go_application"
-    ports:
-      - "80:80"
+    expose:
+      - 80
     networks:
       - app_network
 
