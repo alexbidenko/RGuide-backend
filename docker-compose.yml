@@ -47,6 +47,7 @@ services:
       - 80
     networks:
       - app_network
+      - server
 
 volumes:
   postgres-data:
