@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   postgres:
-    restart: always
+    restart: unless-stopped
     image: postgres:9.5-alpine
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
@@ -11,11 +11,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
     networks:
       - app_network
 
   adminer:
-    restart: always
+    restart: unless-stopped
     image: adminer
     ports:
       - 6543:8080
@@ -23,7 +25,7 @@ services:
       - app_network
 
   go_application:
-    restart: always
+    restart: unless-stopped
     build: "."
     depends_on:
       - "postgres"
@@ -34,14 +36,15 @@ services:
       - app_network
 
   nginx:
-    restart: always
+    restart: unless-stopped
     build: "./.nginx"
     container_name: rguide_backend
     depends_on:
       - "go_application"
+    ports:
+      - "80:80"
     networks:
       - app_network
-      - server
 
 volumes:
   postgres-data:
@@ -52,4 +55,4 @@ networks:
   app_network:
     driver: bridge
   server:
-    external: true
+    driver: bridge
