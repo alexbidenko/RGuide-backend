@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var headers = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header"
+var headers = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header, sec-ch-ua, sec-ch-ua-mobile, sec-fetch-dest, sec-fetch-mode, sec-fetch-site"
 
 func handler(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprint(w, "Hello RGuide!")
