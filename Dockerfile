@@ -10,6 +10,7 @@ RUN go get github.com/gorilla/mux
 RUN go get github.com/gorilla/handlers
 RUN go get github.com/jmoiron/sqlx
 RUN go get github.com/asaskevich/govalidator
+RUN go get github.com/doug-martin/goqu
 RUN GOOS=linux go build -ldflags="-s -w" -o main .
 
 FROM alpine:3.10
