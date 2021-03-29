@@ -15,12 +15,34 @@ import (
 func InitProducts(r *mux.Router) {
 	r.HandleFunc("/products", getProducts).Methods("GET")
 	r.HandleFunc("/products", createProduct).Methods("POST")
+	r.HandleFunc("/products/{id}", getProductById).Methods("GET")
 	r.HandleFunc("/products/file", uploadFile).Methods("POST")
 }
 
-func getProducts(w http.ResponseWriter, _ *http.Request) {
-	var product []models.Product
-	dif.DB.Select(&product, "SELECT * FROM products")
+func getProducts(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("q")
+
+	products := make([]models.Product, 0)
+	if q != "" {
+		dif.DB.Select(&products, "SELECT * FROM products WHERE title LIKE $1", "%" + q + "%")
+	} else {
+		dif.DB.Select(&products, "SELECT * FROM products")
+	}
+	data, _ := json.Marshal(products)
+	w.Write(data)
+}
+
+func getProductById(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+
+	var product models.Product
+	dif.DB.Get(&product, "SELECT * FROM products WHERE id = $1", id)
+
+	if product.Id == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	data, _ := json.Marshal(product)
 	w.Write(data)
 }
