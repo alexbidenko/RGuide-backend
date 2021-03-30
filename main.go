@@ -19,12 +19,12 @@ func handler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func main() {
-	db := dif.DB
 	err := dif.DBError
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+
+	dif.Migrate()
 
 	r := mux.NewRouter()
 
@@ -33,10 +33,13 @@ func main() {
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "PATCH"})
 
 	r.PathPrefix("/files/previews/").Handler(http.StripPrefix("/files/previews/", http.FileServer(http.Dir("/var/www/files-preview"))))
-	r.PathPrefix("/files/models/").Handler(http.StripPrefix("/files/models/", http.FileServer(http.Dir("/var/www/files-model"))))
+	r.PathPrefix("/files/entities/").Handler(http.StripPrefix("/files/entities/", http.FileServer(http.Dir("/var/www/files-model"))))
+
 	s := r.PathPrefix("/api").Subrouter()
 	controllers.InitProducts(s)
+	controllers.InitCategories(s)
 	r.HandleFunc("/api", handler)
+
 	fmt.Printf("Server starting")
 	log.Fatal(http.ListenAndServe(":8010", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }

@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/asaskevich/govalidator"
-	"github.com/doug-martin/goqu"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"rguide/dif"
+	"rguide/entities"
+	_ "rguide/entities"
 	"rguide/models"
-	_ "rguide/models"
+	"strconv"
 	"strings"
 )
 
@@ -25,29 +25,34 @@ func InitProducts(r *mux.Router) {
 func getProducts(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query().Get("q")
 
-	products := make([]models.Product, 0)
-	builder := goqu.From("products")
-	var query string
-	if q != "" {
-		builder = builder.Where(goqu.Ex{
-			"title": goqu.Op{"like": "%" + q + "%"},
-		})
+	parameters := map[string]interface{}{}
+
+	categoryIdParameter := r.URL.Query().Get("category_id")
+	categoryId, err := strconv.Atoi(categoryIdParameter)
+
+	if categoryIdParameter != "" && err == nil {
+		parameters["category_id"] = categoryId
 	}
-	query, _, _ = builder.ToSQL()
-	dif.DB.Select(&products, query)
+
+	var productModel models.ProductModel
+	products := productModel.FindAll(q, parameters)
+
 	data, _ := json.Marshal(products)
 	w.Write(data)
 }
 
 func getProductById(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
 
-	sql, _, _ := goqu.From("products").Where(goqu.Ex{"id": id}).ToSQL()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	var product models.Product
-	dif.DB.Get(&product, sql)
+	var productModel models.ProductModel
+	product, err := productModel.GetById(id)
 
-	if product.Id == 0 {
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -57,7 +62,7 @@ func getProductById(w http.ResponseWriter, r *http.Request) {
 }
 
 func createProduct(w http.ResponseWriter, r *http.Request) {
-	var p models.Product
+	var p entities.Product
 	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -70,9 +75,9 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sql, _, _ := goqu.Insert("products").Rows(p).ToSQL()
+	var productModel models.ProductModel
+	productModel.Create(&p)
 
-	_ = dif.DB.QueryRowx(sql).StructScan(&p)
 	data, _ := json.Marshal(p)
 	w.Write(data)
 }
@@ -110,24 +115,24 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	tempFile.Write(fileBytes)
 	fileName := strings.ReplaceAll(tempFile.Name(), "/var/www/files-" + fileType + "/", "")
 
-	productId := r.FormValue("productId")
-	if productId != "" {
-		sql, _, _ := goqu.From("products").Where(goqu.Ex{"id": productId}).ToSQL()
-		var product models.Product
-		dif.DB.Get(&product, sql)
+	productId, err := strconv.Atoi(r.FormValue("productId"))
+	if err != nil {
+		var productModel models.ProductModel
+		product, _ := productModel.GetById(productId)
 
 		var prevFileName string
 		switch fileType {
 		case "model":
 			prevFileName = product.Model
+			product.Model = fileName
 			break
 		case "preview":
 			prevFileName = product.Preview
+			product.Preview = fileName
 		}
 		os.Remove("/var/www/files-" + fileType + "/" + prevFileName)
 
-		sql, _, _ = goqu.Update("products").Set(goqu.Record{fileType: fileName}).Where(goqu.Ex{"id": productId}).ToSQL()
-		dif.DB.Exec(sql)
+		productModel.Update(productId, &product)
 	}
 
 	fmt.Fprintf(w, `{"filename":"` + fileName + `"}`)

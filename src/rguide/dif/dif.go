@@ -1,9 +1,11 @@
 package dif
 
 import (
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var connStr = "host=188.225.47.219 user=postgres password=postgres dbname=postgres sslmode=disable"
-var DB, DBError = sqlx.Connect("postgres", connStr)
+var DB, DBError = gorm.Open(postgres.New(postgres.Config{
+	DSN: connStr,
+}), &gorm.Config{})
