@@ -116,7 +116,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	fileName := strings.ReplaceAll(tempFile.Name(), "/var/www/files-" + fileType + "/", "")
 
 	productId, err := strconv.Atoi(r.FormValue("productId"))
-	if err != nil {
+	if err == nil {
 		var productModel models.ProductModel
 		product, _ := productModel.GetById(productId)
 
