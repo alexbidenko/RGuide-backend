@@ -33,7 +33,7 @@ func main() {
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "PATCH"})
 
 	r.PathPrefix("/files/previews/").Handler(http.StripPrefix("/files/previews/", http.FileServer(http.Dir("/var/www/files-preview"))))
-	r.PathPrefix("/files/entities/").Handler(http.StripPrefix("/files/entities/", http.FileServer(http.Dir("/var/www/files-model"))))
+	r.PathPrefix("/files/model/").Handler(http.StripPrefix("/files/model/", http.FileServer(http.Dir("/var/www/files-model"))))
 
 	s := r.PathPrefix("/api").Subrouter()
 	controllers.InitProducts(s)
