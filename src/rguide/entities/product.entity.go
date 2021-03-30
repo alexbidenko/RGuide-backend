@@ -9,4 +9,6 @@ type Product struct {
 	Model string `json:"model"`
 	CategoryId int `json:"category_id"`
 	Category *Category `json:"category"`
+	GroupId int `json:"group_id"`
+	Group *Group `json:"group"`
 }

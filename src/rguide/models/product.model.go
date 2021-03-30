@@ -21,7 +21,7 @@ func (productModel ProductModel) GetById(id int) (entities.Product, error) {
 
 func (productModel ProductModel) FindAll(q string, parameters map[string]interface{}) []entities.Product {
 	var products []entities.Product
-	dif.DB.Model(&entities.Product{}).Where("title LIKE ?", "%" + q +  "%").Where(parameters).Find(&products)
+	dif.DB.Model(&entities.Product{}).Preload("Group").Where("title LIKE ?", "%" + q +  "%").Where(parameters).Find(&products)
 	return products
 }
 
